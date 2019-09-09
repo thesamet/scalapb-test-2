@@ -17,8 +17,10 @@ libraryDependencies ++= Seq(
 
 mainClass in assembly := Some("com.ukonnra.scalapb.Server")
 test in assembly := {}
-assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeDependency = true)
+
 assemblyMergeStrategy in assembly := {
-  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
-  case _                             => MergeStrategy.first
+    case x if x.contains("io.netty.versions.properties") => MergeStrategy.discard
+    case x =>
+        val oldStrategy = (assemblyMergeStrategy in assembly).value
+        oldStrategy(x)
 }
